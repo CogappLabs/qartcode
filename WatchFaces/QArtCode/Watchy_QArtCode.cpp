@@ -1,8 +1,6 @@
 #include "Watchy_QArtCode.h"
 #include <stdlib.h>     //srand, rand
 
-unsigned char image_bytes[5000];
-
 WatchyQArtCode::WatchyQArtCode(){} //constructor
 
 void WatchyQArtCode::drawWatchFace(){
@@ -11,13 +9,13 @@ void WatchyQArtCode::drawWatchFace(){
 
     display.fillScreen(GxEPD_BLACK);
     display.setTextColor(GxEPD_WHITE);
-    display.setCursor(0, 24);
-    display.println("TESTING 2!");
+    // display.setCursor(0, 24);
+    // display.println("INITIALISED!");
 
     if(connectWiFi()){//Use Weather API for live data if WiFi is connected
         HTTPClient http;
         http.setConnectTimeout(3000);//3 second max timeout
-        String imageURL = "http://192.168.0.66:8887/byte-fileO1373289.img";
+        String imageURL = "http://192.168.0.66:5000/";
         http.begin(imageURL.c_str());
         int httpResponseCode = http.GET();
         if(httpResponseCode == 200) {
@@ -27,32 +25,16 @@ void WatchyQArtCode::drawWatchFace(){
             Serial.print("Body size is ");
             Serial.println(bodyLen);
             image_string = http.getString();
-            Serial.print("String size is ");
-            Serial.println(image_string.length());
-            image_string.getBytes(image_bytes, 5000);
             display.fillScreen(GxEPD_WHITE);
-
-            for (int i=0; i <50; i++) {
-              Serial.print("Char ");
-              Serial.print(i);
-              Serial.print(" is ");
-              Serial.println((int)image_string.charAt(i));
-              
-            }
 
             int row = 0;
             int column = 0;
 
             for (int i=0; i <5000; i++) {
-              Serial.print("byte ");
-              Serial.print(i);
-              Serial.print(" value ");
-              //Serial.println(image_bytes[i]);
-              Serial.println((int)image_string.charAt(i));
               for (int j=0; j < 8; j++) {
                 // oddly read from the wrong end of they byte?
                 int pixelValue = bitRead((int)image_string.charAt(i), 7 - j);
-                Serial.print(pixelValue);
+                // Serial.print(pixelValue);
                 if (pixelValue == 0) {
                   display.drawPixel(row, column, GxEPD_BLACK);
                 } else {
@@ -66,14 +48,10 @@ void WatchyQArtCode::drawWatchFace(){
               }
             }
 
-             //String payload = http.getString();
-            // JSONVar responseObject = JSON.parse(payload);
-            // currentWeather.temperature = int(responseObject["main"]["temp"]);
-            // currentWeather.weatherConditionCode = int(responseObject["weather"][0]["id"]);            
         }else{
             //http error
             Serial.println("http error");
-            // draw a default QR code until we get wifi back
+            // draw a default QR code until we get the network back
             display.drawBitmap(0, 0, bitmap_broken, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_WHITE);
         }
         http.end();
@@ -83,8 +61,10 @@ void WatchyQArtCode::drawWatchFace(){
         btStop();
     }else{//No WiFi
             Serial.println("no wifi");
+            // draw a default QR code until we get the wifi back
+            display.drawBitmap(0, 0, bitmap_broken, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_WHITE);
     }
     
-    Serial.print("just did something");
+    Serial.print("finished drawing");
     Serial.println();
 }
