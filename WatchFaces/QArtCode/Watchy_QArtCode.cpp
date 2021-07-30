@@ -15,7 +15,7 @@ void WatchyQArtCode::drawWatchFace(){
     if(connectWiFi()){//Use Weather API for live data if WiFi is connected
         HTTPClient http;
         http.setConnectTimeout(3000);//3 second max timeout
-        String imageURL = "http://192.168.0.66:5000/";
+        String imageURL = "https://qartcode.herokuapp.com/";
         http.begin(imageURL.c_str());
         int httpResponseCode = http.GET();
         if(httpResponseCode == 200) {

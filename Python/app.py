@@ -23,7 +23,7 @@ def get_file():
     object_info = object_data["info"]
     object_records = object_data["records"]
     record_count = object_info["record_count"]
-    print("There are {record_count} objects that match")
+    print("There are {} objects that match".format(record_count))
     print(object_records)
 
     for record in object_records:
@@ -40,15 +40,14 @@ def get_file():
 
         file2 = open("qr-bytes.img", "wb")
 
-        img = img.convert("1")
+        img = img.convert("1") # 1 bit black/white
         newFileByteArray = img.tobytes()
 
         file2.write(newFileByteArray)
 
         file2.close()
 
-        print(newFileByteArray)
-        print(img.tobytes("xbm", "1"))
+        # print(newFileByteArray)
 
         # uncomment to debug
         # img.show()
