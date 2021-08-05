@@ -1,12 +1,5 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-# Python program to read
-# image using PIL module
-# converting image to qrcode and then change into binary
+# Python program to get a random V&A object URL, get it as a QR code and them use PIL to convert
+# the image to a 5000 byte array to send to an Arduino-based Watchy (200px x 200px e-ink display)
 
 from PIL import Image
 import urllib.request

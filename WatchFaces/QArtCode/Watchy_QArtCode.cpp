@@ -8,11 +8,10 @@ void WatchyQArtCode::drawWatchFace(){
     String image_string;
 
     display.fillScreen(GxEPD_BLACK);
-    display.setTextColor(GxEPD_WHITE);
     // display.setCursor(0, 24);
     // display.println("INITIALISED!");
 
-    if(connectWiFi()){//Use Weather API for live data if WiFi is connected
+    if(connectWiFi()){
         HTTPClient http;
         http.setConnectTimeout(3000);//3 second max timeout
         String imageURL = "https://qartcode.herokuapp.com/";
@@ -47,6 +46,9 @@ void WatchyQArtCode::drawWatchFace(){
                 }
               }
             }
+            // uncomment this if you want to check 
+            // the positioning of the time rectangle
+            //display.fillScreen(GxEPD_WHITE);
 
         }else{
             //http error
@@ -59,12 +61,38 @@ void WatchyQArtCode::drawWatchFace(){
         //turn off radios
         WiFi.mode(WIFI_OFF);
         btStop();
+
     }else{//No WiFi
             Serial.println("no wifi");
             // draw a default QR code until we get the wifi back
             display.drawBitmap(0, 0, bitmap_broken, DISPLAY_WIDTH, DISPLAY_HEIGHT, GxEPD_WHITE);
     }
     
-    Serial.print("finished drawing");
+    // print time
+    display.fillRect(86, 88, 31, 12, GxEPD_BLACK);
+    // no! too big! Back to default of 9pt
+    // display.setFont(&FreeMonoBold12pt7b);
+    display.setTextColor(GxEPD_WHITE);
+    display.setCursor(87, 90);
+    if(currentTime.Hour < 10){
+        display.print('0');
+    }
+    display.print(currentTime.Hour);
+    display.print(':');
+    if(currentTime.Minute < 10){
+        display.print('0');
+    }    
+    display.print(currentTime.Minute);
+    
+    Serial.print("Oh and the time is ");
+    if(currentTime.Hour < 10){
+        Serial.print('0');
+    }
+    Serial.print(currentTime.Hour);
+    Serial.print(':');
+    if(currentTime.Minute < 10){
+        Serial.print('0');
+    }    
+    Serial.print(currentTime.Minute);
     Serial.println();
 }
